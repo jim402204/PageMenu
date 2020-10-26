@@ -30,6 +30,7 @@
                         <constraints>
                             <constraint firstItem="nWU-R8-hfZ" firstAttribute="centerX" secondItem="IuR-Qs-etx" secondAttribute="centerX" id="Px8-n4-LdG"/>
                             <constraint firstItem="nWU-R8-hfZ" firstAttribute="centerY" secondItem="IuR-Qs-etx" secondAttribute="centerY" id="Wut-ZL-tRO"/>
+                            <constraint firstAttribute="width" constant="90" id="v7b-s9-EYQ"/>
                         </constraints>
                     </view>
                 </subviews>
@@ -44,6 +45,7 @@
             </constraints>
             <size key="customSize" width="222" height="125"/>
             <connections>
+                <outlet property="cellWidth" destination="v7b-s9-EYQ" id="4xY-ez-TIL"/>
                 <outlet property="title" destination="nWU-R8-hfZ" id="E1J-iz-aw7"/>
             </connections>
             <point key="canvasLocation" x="224.63768115942031" y="123.21428571428571"/>

@@ -53,9 +53,9 @@ extension ViewController {
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         //如果要浮動item size 需要覆寫 layotut attribute 方法
-        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 4, height: 40)
+//        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 4, height: 40)
         
-//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
 //        layout.itemSize = UICollectionViewFlowLayout.automaticSize
         
         layout.minimumLineSpacing = 0.3
@@ -102,7 +102,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         item.title.textColor = .black
         
         
-//        item.cellWidth.constant = CGFloat((text.count * 30))
+        item.cellWidth.constant = CGFloat((text.count * 30))
         
         return item
     }
