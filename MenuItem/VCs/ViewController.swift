@@ -10,7 +10,6 @@ import UIKit
 //https://github.com/rechsteiner/Parchment
 //https://github.com/yysskk/SwipeMenuViewController
 
-
 class ViewController: UIViewController {
 
     @IBOutlet weak var menuView: UICollectionView!
@@ -50,11 +49,15 @@ extension ViewController {
         menuView.showsHorizontalScrollIndicator = false
         menuView.register(UINib(nibName: "LabelCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "cell")
         
-        
+        //https://stackoverflow.com/questions/51585879/uicollectionviewcell-dynamic-height-w-two-dynamic-labels-auto-layout
         let layout = UICollectionViewFlowLayout()
-        layout.sectionInset = UIEdgeInsets(top: 10, left: 0, bottom: 10, right: 0)
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         //如果要浮動item size 需要覆寫 layotut attribute 方法
         layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 4, height: 40)
+        
+//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//        layout.itemSize = UICollectionViewFlowLayout.automaticSize
+        
         layout.minimumLineSpacing = 0.3
         layout.scrollDirection = .horizontal
         menuView.decelerationRate = .fast
@@ -64,6 +67,8 @@ extension ViewController {
     }
     
     func setUpMenuSlider() {
+        
+        //layout 要配置為scrollView
         
         let slider = UIView()
         slider.translatesAutoresizingMaskIntoConstraints = false
@@ -79,7 +84,6 @@ extension ViewController {
     }
     
 }
-
 
 // MARK: UICollectionView
 
@@ -98,6 +102,8 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         item.title.textColor = .black
         
         
+//        item.cellWidth.constant = CGFloat((text.count * 30))
+        
         return item
     }
     
@@ -107,7 +113,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         //直接取得 item對應的contentoffset 的frame
         let itemAttributes = self.menuView.collectionViewLayout.layoutAttributesForItem(at: indexPath) //item object
-        print("itemAttributes: \(String(describing: itemAttributes?.frame.minX))")
+//        print("itemAttributes: \(String(describing: itemAttributes?.frame.minX))")
 
         let defaultWidth = getItemContentOffsetWidth(collectionView: collectionView, indexPath)
         let itemContentOffset = itemAttributes?.frame.minX ?? defaultWidth
@@ -157,7 +163,7 @@ extension ViewController: UIScrollViewDelegate {
         guard !(scrollView is UICollectionView) else { return }
         //擋掉page offset 歸零的判斷
         guard !(scrollView.contentOffset.x == screenWidth) else { return }
-        print(scrollView.contentOffset.x)
+//        print(scrollView.contentOffset.x)
         
         menuSliderBarMove(scrollView, screenWidth: screenWidth)
         

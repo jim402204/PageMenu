@@ -9,6 +9,9 @@ import UIKit
 
 class LabelCollectionViewCell: UICollectionViewCell {
     
+    @IBOutlet weak var cellWidth: NSLayoutConstraint!
+    
+    
     @IBOutlet weak var title: UILabel!
     
     override func awakeFromNib() {
