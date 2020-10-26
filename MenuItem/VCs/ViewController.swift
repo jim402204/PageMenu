@@ -16,7 +16,8 @@ class ViewController: UIViewController {
     @IBOutlet weak var menuView: UICollectionView!
     
     var leftConstraint: NSLayoutConstraint? = nil
-    let menuModeld = ["芭蕉","旦蕉","金鑽鳳梨","鳳梨花","蓬萊仙山999","甜蜜蜜","檸檬","牛奶鳳梨","葡萄柚","柚子"]
+    
+    let menuModels = ["芭蕉","旦蕉","金鑽鳳梨","鳳梨花","蓬萊仙山999","甜蜜蜜","檸檬","牛奶鳳梨","葡萄柚","柚子"]
     
     lazy var pageVC: PageVC? = { return self.children.first as? PageVC }()
     
@@ -32,6 +33,7 @@ class ViewController: UIViewController {
         setUpMenuSlider()
         
         pageVC?.scrollView?.delegate = self
+        pageVC?.setUpVCs(models: menuModels)
     }
     
 }
@@ -57,6 +59,8 @@ extension ViewController {
         layout.scrollDirection = .horizontal
         menuView.decelerationRate = .fast
         menuView.collectionViewLayout = layout
+        
+        menuView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .centeredHorizontally)
     }
     
     func setUpMenuSlider() {
@@ -82,14 +86,14 @@ extension ViewController {
 extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return menuModeld.count
+        return menuModels.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
         let item = menuView.dequeueReusableCell(withReuseIdentifier: "cell", for: indexPath) as! LabelCollectionViewCell
         
-        let text = menuModeld[indexPath.row]
+        let text = menuModels[indexPath.row]
         item.title.text = String(text)
         item.title.textColor = .black
         
@@ -110,6 +114,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         self.leftConstraint?.constant = itemContentOffset
         
+        movePageVC(to: indexPath)
         
         updateMenuViewForMenuSiderAnimate()
         
@@ -129,6 +134,14 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         //字一樣大才有這個效果   //不一樣大要取得各個item左邊的點在contentOffset的位置
         let result = (collectionView.frame.width / 4.0) * CGFloat(indexPath.row)
         return result
+    }
+    
+    func movePageVC(to indexPath: IndexPath) {
+        
+        if let pageVC = self.pageVC {
+            let displayVC = pageVC.viewControllerList[indexPath.row]
+            pageVC.setViewControllers([displayVC], direction: .forward, animated: false, completion: nil)
+        }
     }
     
 }

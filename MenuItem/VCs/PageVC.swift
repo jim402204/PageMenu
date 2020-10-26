@@ -9,13 +9,9 @@ import UIKit
 
 protocol PageModel {}
 
-struct Item: PageModel {
-    var id = 0
-}
-
 class PageVC: UIPageViewController {
     //直接拿也沒有用 這是對應 UIPageViewController內的vcs 需要setViewControllers放入
-    fileprivate var viewControllerList = [UIViewController]()
+    var viewControllerList = [UIViewController]()
     fileprivate var models = [PageModel]()
     
     var theLastIndex: Int { return (viewControllerList.count - 1) }
@@ -26,11 +22,6 @@ class PageVC: UIPageViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dump(self)
-        
-        let items = [Item(),Item(),Item(),Item()]
-        setUpVCs(models: items)
-        
         setUPPageVC()
     }
     
@@ -39,10 +30,14 @@ class PageVC: UIPageViewController {
         self.delegate = self
         self.dataSource = self
 //        scrollView?.delegate = self
+        
+//        scrollView?.bounces = false
     }
     
-    func setUpVCs(models: [PageModel]) {
-        
+    //https://www.jianshu.com/p/6762c2b5274a
+    
+    func setUpVCs<T: Sequence>(models: T) {
+       
         var vcs: [UIViewController] = []
         models.forEach({ (model) in
             let vc = UIViewController()
@@ -58,6 +53,7 @@ class PageVC: UIPageViewController {
 }
 
 extension PageVC: UIPageViewControllerDataSource {
+    
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerBefore viewController: UIViewController) -> UIViewController? {
         
         guard let currentIndex =  self.viewControllerList.firstIndex(of: viewController) else {
@@ -66,7 +62,9 @@ extension PageVC: UIPageViewControllerDataSource {
         }
         
         let previousIndex = currentIndex - 1
-        return previousIndex < 0 ?  viewControllerList[self.theLastIndex] : viewControllerList[previousIndex]
+//        return previousIndex < 0 ?  viewControllerList[self.theLastIndex] : viewControllerList[previousIndex]
+        
+        return previousIndex < 0 ?  nil : viewControllerList[previousIndex]
     }
 
     func pageViewController(_ pageViewController: UIPageViewController, viewControllerAfter viewController: UIViewController) -> UIViewController? {
@@ -77,7 +75,9 @@ extension PageVC: UIPageViewControllerDataSource {
         }
         
         let nextIndex = currentIndex + 1
-        return nextIndex > self.theLastIndex ? viewControllerList[0] : viewControllerList[nextIndex]
+//        return nextIndex > self.theLastIndex ? viewControllerList[0] : viewControllerList[nextIndex]
+        
+        return nextIndex > self.theLastIndex ? nil : viewControllerList[nextIndex]
     }
     
 }
