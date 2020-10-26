@@ -139,32 +139,45 @@ extension ViewController: UIScrollViewDelegate {
     
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-        
         let screenWidth = UIScreen.main.bounds.width
-        
-        
+        //擋掉上面 UICollectionView 的滾動
         guard !(scrollView is UICollectionView) else { return }
-    
-        guard !(scrollView.contentOffset.x == 375) else { return }
-        
+        //擋掉page offset 歸零的判斷
+        guard !(scrollView.contentOffset.x == screenWidth) else { return }
         print(scrollView.contentOffset.x)
         
-        let unit = (scrollView.contentOffset.x - 375) / 4
-        self.leftConstraint?.constant = self.currentLoaction + unit
+        menuSliderBarMove(scrollView, screenWidth: screenWidth)
         
+        itemSelection(scrollView,screenWidth: screenWidth)
+    }
+    
+    func menuSliderBarMove(_ scrollView: UIScrollView, screenWidth: CGFloat) {
         
-        let result = (scrollView.frame.width / 4)
+        //取得得是滾完的位置 需要 - item本身的width
+        let endLoacation = (scrollView.contentOffset.x - screenWidth) / 4
+        self.leftConstraint?.constant = self.currentLoaction + endLoacation
+    }
+    
+    func itemSelection(_ scrollView: UIScrollView, screenWidth: CGFloat) {
+        
+        //item本身的width
+        let itemWidth = (scrollView.frame.width / 4)
+        
         if scrollView.contentOffset.x == 0 {
-            self.currentLoaction = self.currentLoaction - result
             
-            self.menuView.selectItem(at: IndexPath(row: currentRow - 1, section: 0), animated: true, scrollPosition: .centeredHorizontally)
-            currentRow -= 1
-        } else if scrollView.contentOffset.x == 750 {
-            self.currentLoaction = self.currentLoaction + result
+            self.currentLoaction = self.currentLoaction - itemWidth
+            scrollToCenteredHorizontally(currentRow: (currentRow - 1))
             
-            self.menuView.selectItem(at: IndexPath(row: currentRow + 1, section: 0), animated: true, scrollPosition: .centeredHorizontally)
-            currentRow += 1
+        } else if scrollView.contentOffset.x == (screenWidth + screenWidth) {
+            
+            self.currentLoaction = self.currentLoaction + itemWidth
+            scrollToCenteredHorizontally(currentRow: (currentRow + 1))
         }
+    }
+    
+    fileprivate func scrollToCenteredHorizontally(currentRow: Int) {
+        self.menuView.selectItem(at: IndexPath(row: currentRow, section: 0), animated: true, scrollPosition: .centeredHorizontally)
+        self.currentRow = currentRow
     }
     
 }
