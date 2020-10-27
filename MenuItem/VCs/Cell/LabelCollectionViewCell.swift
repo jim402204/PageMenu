@@ -20,14 +20,15 @@ class LabelCollectionViewCell: UICollectionViewCell {
         // 選擇文字 顯示顏色
         title.highlightedTextColor = .systemRed
         
-        contentView.translatesAutoresizingMaskIntoConstraints = false
         
-        NSLayoutConstraint.activate([
-            contentView.leftAnchor.constraint(equalTo: leftAnchor),
-            contentView.rightAnchor.constraint(equalTo: rightAnchor),
-            contentView.topAnchor.constraint(equalTo: topAnchor),
-            contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
-        ])
+//        contentView.translatesAutoresizingMaskIntoConstraints = false
+//        
+//        NSLayoutConstraint.activate([
+//            contentView.leftAnchor.constraint(equalTo: leftAnchor),
+//            contentView.rightAnchor.constraint(equalTo: rightAnchor),
+//            contentView.topAnchor.constraint(equalTo: topAnchor),
+//            contentView.bottomAnchor.constraint(equalTo: bottomAnchor)
+//        ])
     }
 
 }

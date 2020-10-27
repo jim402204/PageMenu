@@ -8,7 +8,7 @@
 import UIKit
 
 class CollectionViewFlowLayout: UICollectionViewFlowLayout {
-    
+    //滾動變形的 選true
     override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
         return true
     }
