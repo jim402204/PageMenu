@@ -13,24 +13,21 @@ import UIKit
 class ViewController: UIViewController {
 
     @IBOutlet weak var menuView: UICollectionView!
-    
+    //menu slider bar NSLayoutConstraint
     var leftAnchor: NSLayoutConstraint? = nil
     var widthAnchor: NSLayoutConstraint? = nil
-    
-    
-   
-    
-    //取得動態title寬度
-    let textFont = UIFont.systemFont(ofSize: 17)
-    let textHeight: CGFloat = 40
     
     let menuModels = ["芭蕉","旦蕉","金鑽鳳梨","鳳梨花","蓬萊仙山999","甜蜜蜜","檸檬","牛奶鳳梨","葡萄柚","柚子"]
     
     lazy var pageVC: PageVC? = { return self.children.first as? PageVC }()
     
     
-    var indexMenuItemX: [Int:CGFloat] = [:]
-    var indexMenuItemWidth: [Int:CGFloat] = [:]
+    // menu object
+    let menuTextHeight: CGFloat = 40
+    lazy var firstMenuWidth = { self.getTextWidth(indexPath: IndexPath(row: 0, section: 0)) }()
+    
+    var menuItemOffsetX: [Int:CGFloat] = [:]
+    var menuItemWidth: [Int:CGFloat] = [:]
     
     var currentLoaction: CGFloat = 0.0
     var currentRow: Int = 0
@@ -65,21 +62,36 @@ extension ViewController {
         
         
         //https://stackoverflow.com/questions/51585879/uicollectionviewcell-dynamic-height-w-two-dynamic-labels-auto-layout
-//        let layout = UICollectionViewFlowLayout()
-//        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        //如果要浮動item size 需要覆寫 layotut attribute 方法
-////        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 4, height: 40)
+        let layout = UICollectionViewFlowLayout()
+        layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
+//        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 4, height: 40)
+
+        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
+//        layout.itemSize = UICollectionViewFlowLayout.automaticSize
 //
-//        layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-////        layout.itemSize = UICollectionViewFlowLayout.automaticSize
-//
-//        layout.minimumLineSpacing = 0.3
-//        layout.scrollDirection = .horizontal
+        layout.minimumLineSpacing = 1
+        layout.scrollDirection = .horizontal
         
-////        menuView.collectionViewLayout = layout
-        
-        
+        menuView.collectionViewLayout = layout
         menuView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .centeredHorizontally)
+        
+        
+        
+//        var contentSize: CGFloat = 0.0
+//
+//        for (index,item) in menuModels.enumerated() {
+//            let width = menuModels[index].width(withConstrainedHeight: menuTextHeight, font: UIFont.systemFont(ofSize: 17)) + 20 //(左右間距)
+//            contentSize += width
+//        }
+//
+//        menuView.contentSize = CGSize(width: contentSize, height: menuView.contentSize.height)
+//
+//        menuView.reloadData()
+        
+//        layout.invalidateLayout()
+//        menuView.layoutIfNeeded()
+//        menuView.reloadData()
+        
     }
     
     func setUpMenuSlider() {
@@ -97,7 +109,7 @@ extension ViewController {
         
 //        widthAnchor = slider.widthAnchor.constraint(equalTo: menuView.widthAnchor, multiplier: 1/4)
         
-        widthAnchor = slider.widthAnchor.constraint(equalToConstant: getTextWidth(indexPath: IndexPath(row: 0, section: 0)))
+        widthAnchor = slider.widthAnchor.constraint(equalToConstant: firstMenuWidth)
         widthAnchor?.isActive = true
         leftAnchor = slider.leftAnchor.constraint(equalTo: menuView.leftAnchor, constant: 0)
         leftAnchor?.isActive = true
@@ -123,13 +135,10 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         
         let itemAttributes = self.menuView.collectionViewLayout.layoutAttributesForItem(at: indexPath)
-        let defaultWidth = getItemContentOffsetWidth(collectionView: collectionView, indexPath)
-        let itemContentOffset = itemAttributes?.frame.minX ?? defaultWidth
+        let itemContentOffset = itemAttributes?.frame.minX
         
-        indexMenuItemX[indexPath.row] = itemContentOffset
-        print("indexMenuItemX: \(itemContentOffset)")
-        
-        indexMenuItemWidth[indexPath.row] = itemAttributes?.frame.width
+        menuItemOffsetX[indexPath.row] = itemContentOffset
+        menuItemWidth[indexPath.row] = itemAttributes?.frame.width
         
 //        item.cellWidth.constant = CGFloat((text.count * 30)) //使用nib autolayout
         
@@ -140,22 +149,26 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         collectionView.selectItem(at: IndexPath(row: indexPath.row, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         
+        
+        moveMenuSlider(collectionView: collectionView, indexPath)
+        
+        movePageVC(to: indexPath)
+        
+        updateMenuViewForMenuSiderAnimate()
+    }
+    
+    func moveMenuSlider(collectionView: UICollectionView, _ indexPath: IndexPath) {
+        
         //直接取得 item對應的contentoffset 的frame
         let itemAttributes = self.menuView.collectionViewLayout.layoutAttributesForItem(at: indexPath) //item object
 //        print("itemAttributes: \(String(describing: itemAttributes?.frame.minX))")
 
         let defaultWidth = getItemContentOffsetWidth(collectionView: collectionView, indexPath)
         let itemContentOffset = itemAttributes?.frame.minX ?? defaultWidth
-        
-        let itemWidth = itemAttributes?.frame.width ?? defaultWidth
+        let itemWidth = itemAttributes?.frame.width ?? firstMenuWidth
         
         self.leftAnchor?.constant = itemContentOffset
         self.widthAnchor?.constant = itemWidth
-        print("didSelectItemAt: \(getTextWidth(indexPath: indexPath)) itemWidth: \(itemWidth)")
-        
-        movePageVC(to: indexPath)
-        
-        updateMenuViewForMenuSiderAnimate()
         
         // 儲存的位置 供滑動基準。  儲存index 供選擇動畫使用
         self.currentLoaction = itemContentOffset
@@ -189,28 +202,20 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
 
 extension ViewController: UICollectionViewDelegateFlowLayout { //delegate
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        .zero
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 1
-    }
-    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         
         let width = getTextWidth(indexPath: indexPath)
-        return CGSize(width: width, height: textHeight)
+        return CGSize(width: width, height: menuTextHeight)
     }
     
     func getTextWidth(indexPath: IndexPath) -> CGFloat {
-        let width = menuModels[indexPath.row].width(withConstrainedHeight: textHeight, font: textFont) + 20 //(左右間距)
+        //取得動態title寬度
+        let width = menuModels[indexPath.row].width(withConstrainedHeight: menuTextHeight, font: UIFont.systemFont(ofSize: 17)) + 20 //(左右間距)
         print("\(indexPath.row)  \(width)")
         return width
     }
     
 }
-
 
 // MARK: UIScrollView
 
@@ -229,35 +234,36 @@ extension ViewController: UIScrollViewDelegate {
         itemSelection(scrollView,screenWidth: screenWidth)
     }
     
-    func menuSliderBarMove(_ scrollView: UIScrollView, screenWidth: CGFloat) { //移動到下一個。所以currentRow 是要下一個的
+    func menuSliderBarMove(_ scrollView: UIScrollView, screenWidth: CGFloat) {
         
-        //取得得是滾完的位置 需要 - item本身的width
-//        let endLoacation = (scrollView.contentOffset.x - screenWidth) / 4
-//        print("scrollView: \(scrollView.contentOffset.x)")
+        var widthUnit: CGFloat = 0.0
+        var nextWidth: CGFloat = 0.0
+        let currentWidth = menuItemWidth[currentRow] ?? firstMenuWidth
         
         
-        let condition = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1)
+        // pageVC的行為： 0 - 1 - 2 （* 375） 到末端後回歸375
+        let directionCondition = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1)
+        let leftMove = directionCondition > 0
+        let rightMove = directionCondition < 0
         
-        var unit: CGFloat = 0.0
-        var unitWidth: CGFloat = 0.0
-        
-        if condition > 0 {
+        if leftMove {
             
-            unit = indexMenuItemWidth[currentRow]!
-            unitWidth = indexMenuItemWidth[currentRow + 1]!
-        } else if condition < 0 {
+            widthUnit = currentWidth
+            nextWidth = menuItemWidth[currentRow + 1] ?? currentWidth
+            
+        } else if rightMove {
 
-            unit = indexMenuItemWidth[currentRow - 1]!
-            unitWidth = indexMenuItemWidth[currentRow - 1]!
+            widthUnit = menuItemWidth[currentRow - 1] ?? currentWidth
+            nextWidth = menuItemWidth[currentRow - 1] ?? currentWidth
         }
         
-        //偏移量 / 移動的距離 -1個單位 ＊ 單位量
-        let endLoacation = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1) * unit
+        //偏移量 / 移動的距離 -1個單位 ＊ 單位量  //取得得是滾完的位置 需要 - item本身的width
+        let endLoacation = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1) * widthUnit
         self.leftAnchor?.constant = self.currentLoaction + endLoacation
         
-        
-        let endWidth  = abs((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1) * (unitWidth - indexMenuItemWidth[currentRow]!)
-        self.widthAnchor?.constant = indexMenuItemWidth[currentRow]! + endWidth
+        //滑動變化率必須要為正的
+        let varyingWidth  = abs((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1) * (nextWidth - currentWidth)
+        self.widthAnchor?.constant = currentWidth + varyingWidth
     }
     
     func itemSelection(_ scrollView: UIScrollView, screenWidth: CGFloat) { //判斷翻頁 左右
@@ -276,7 +282,7 @@ extension ViewController: UIScrollViewDelegate {
         self.menuView.selectItem(at: IndexPath(row: currentRow, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         self.currentRow = currentRow
         //儲存上一個位置
-        self.currentLoaction = indexMenuItemX[currentRow] ?? 0.0
+        self.currentLoaction = menuItemOffsetX[currentRow] ?? 0.0
     }
     
 }

@@ -29,9 +29,6 @@ class PageVC: UIPageViewController {
         
         self.delegate = self
         self.dataSource = self
-//        scrollView?.delegate = self
-        
-//        scrollView?.bounces = false
     }
     
     //https://www.jianshu.com/p/6762c2b5274a
@@ -94,16 +91,6 @@ extension PageVC: UIPageViewControllerDelegate {
         }
         
     }
-}
-
-extension PageVC: UIScrollViewDelegate {
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        print(scrollView.contentOffset.x)
-        
-        
-    }
-    
 }
 
 extension UIColor {

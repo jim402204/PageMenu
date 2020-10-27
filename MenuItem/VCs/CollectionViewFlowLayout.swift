@@ -32,12 +32,6 @@ class CollectionViewFlowLayout: UICollectionViewFlowLayout {
     // cell 的cellForRow
     override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = super.layoutAttributesForItem(at: indexPath)
-        
-        print("11111111111111111")
-
-        print("attributes \(attributes)")
-        
-        print("22222222222222222")
        
         return attributes
     }
