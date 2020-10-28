@@ -24,13 +24,13 @@ class ViewController: UIViewController {
     
     // menu object
     let menuTextHeight: CGFloat = 40
-    lazy var firstMenuWidth = { self.getTextWidth(indexPath: IndexPath(row: 0, section: 0)) }()
+    fileprivate lazy var firstMenuWidth = { self.getTextWidth(indexPath: IndexPath(row: 0, section: 0)) }()
     
-    var menuItemOffsetX: [Int:CGFloat] = [:]
-    var menuItemWidth: [Int:CGFloat] = [:]
+    fileprivate var menuItemOffsetX: [Int:CGFloat] = [:]
+    fileprivate var menuItemWidth: [Int:CGFloat] = [:]
     
-    var currentLoaction: CGFloat = 0.0
-    var currentRow: Int = 0
+    fileprivate var currentLoaction: CGFloat = 0.0
+    fileprivate var currentRow: Int = 0
     
     
     override func viewDidLoad() {
@@ -48,7 +48,7 @@ class ViewController: UIViewController {
 
 // MARK: setUpView
 
-extension ViewController {
+fileprivate extension ViewController {
     
     func setUpCollectionView() {
     
@@ -58,7 +58,6 @@ extension ViewController {
         menuView.showsHorizontalScrollIndicator = false
         menuView.register(UINib(nibName: "LabelCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: "cell")
         menuView.decelerationRate = .fast
-        
         
         
         //https://stackoverflow.com/questions/51585879/uicollectionviewcell-dynamic-height-w-two-dynamic-labels-auto-layout
@@ -127,7 +126,6 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         
         collectionView.selectItem(at: IndexPath(row: indexPath.row, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         
-        
         moveMenuSlider(collectionView: collectionView, indexPath)
         
         movePageVC(to: indexPath)
@@ -135,7 +133,7 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         updateMenuViewForMenuSiderAnimate()
     }
     
-    func moveMenuSlider(collectionView: UICollectionView, _ indexPath: IndexPath) {
+    fileprivate func moveMenuSlider(collectionView: UICollectionView, _ indexPath: IndexPath) {
         
         //直接取得 item對應的contentoffset 的frame
         let itemAttributes = self.menuView.collectionViewLayout.layoutAttributesForItem(at: indexPath) //item object
@@ -153,14 +151,14 @@ extension ViewController: UICollectionViewDelegate, UICollectionViewDataSource {
         self.currentRow = indexPath.row
     }
     
-    func updateMenuViewForMenuSiderAnimate() {
+    fileprivate func updateMenuViewForMenuSiderAnimate() {
         
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 0.7, initialSpringVelocity: 0.8, options: .curveEaseIn) {
             self.menuView.layoutIfNeeded()
         } completion: { bool in}
     }
     
-    func getItemContentOffsetWidth(collectionView: UICollectionView, _ indexPath: IndexPath) -> CGFloat {
+    fileprivate func getItemContentOffsetWidth(collectionView: UICollectionView, _ indexPath: IndexPath) -> CGFloat {
         //字一樣大才有這個效果   //不一樣大要取得各個item左邊的點在contentOffset的位置
         let result = (collectionView.frame.width / 4.0) * CGFloat(indexPath.row)
         return result
@@ -246,7 +244,7 @@ extension ViewController: UIScrollViewDelegate {
     }
     
     //判斷翻頁 左右
-    func itemSelection(_ scrollView: UIScrollView, screenWidth: CGFloat) {
+    fileprivate func itemSelection(_ scrollView: UIScrollView, screenWidth: CGFloat) {
       
         if scrollView.contentOffset.x == 0 {
         
@@ -269,7 +267,7 @@ extension ViewController: UIScrollViewDelegate {
         self.currentLoaction = menuItemOffsetX[currentRow] ?? 0.0
     }
     
-    func setUpSpaceing(leftMove: Bool, rightMove: Bool, endLoacation : inout CGFloat) -> CGFloat {
+    fileprivate func setUpSpaceing(leftMove: Bool, rightMove: Bool, endLoacation : inout CGFloat) -> CGFloat {
         
         //左右距離補償
         let flowLayout = self.menuView.collectionViewLayout as? UICollectionViewFlowLayout

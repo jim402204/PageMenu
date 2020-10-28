@@ -15,9 +15,7 @@ class PageVC: UIPageViewController {
     fileprivate var models = [PageModel]()
     
     var theLastIndex: Int { return (viewControllerList.count - 1) }
-    
     lazy var scrollView: UIScrollView? = { self.view.subviews.first as? UIScrollView }()
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,7 +23,7 @@ class PageVC: UIPageViewController {
         setUPPageVC()
     }
     
-    func setUPPageVC() {
+    fileprivate func setUPPageVC() {
         
         self.delegate = self
         self.dataSource = self
@@ -93,11 +91,4 @@ extension PageVC: UIPageViewControllerDelegate {
     }
 }
 
-extension UIColor {
-    static var random: UIColor {
-        return UIColor(red: .random(in: 0...1),
-                       green: .random(in: 0...1),
-                       blue: .random(in: 0...1),
-                       alpha: 1.0)
-    }
-}
+
