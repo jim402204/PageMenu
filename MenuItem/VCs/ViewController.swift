@@ -26,9 +26,10 @@ class ViewController: UIViewController {
     let menuTextHeight: CGFloat = 40
     fileprivate lazy var firstMenuWidth = { self.getTextWidth(indexPath: IndexPath(row: 0, section: 0)) }()
     
+    /// 載入item時候儲存
     fileprivate var menuItemOffsetX: [Int:CGFloat] = [:]
     fileprivate var menuItemWidth: [Int:CGFloat] = [:]
-    
+    /// 點選、滑動結束的時候儲存    滑動的過程使用   （點選：collection  滑動：pageViewController）
     fileprivate var currentLoaction: CGFloat = 0.0
     fileprivate var currentRow: Int = 0
     
