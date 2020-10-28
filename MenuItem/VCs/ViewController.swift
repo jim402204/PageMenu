@@ -64,34 +64,14 @@ extension ViewController {
         //https://stackoverflow.com/questions/51585879/uicollectionviewcell-dynamic-height-w-two-dynamic-labels-auto-layout
         let layout = UICollectionViewFlowLayout()
         layout.sectionInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
-//        layout.itemSize = CGSize(width: UIScreen.main.bounds.width / 4, height: 40)
-
         layout.estimatedItemSize = UICollectionViewFlowLayout.automaticSize
-//        layout.itemSize = UICollectionViewFlowLayout.automaticSize
-//
-        layout.minimumLineSpacing = 1
+        // 注意item跟collection對應的大小 間距設置為0確保顯示為一行
+        layout.minimumInteritemSpacing = 0
+        layout.minimumLineSpacing = 0
         layout.scrollDirection = .horizontal
         
         menuView.collectionViewLayout = layout
         menuView.selectItem(at: IndexPath(row: 0, section: 0), animated: false, scrollPosition: .centeredHorizontally)
-        
-        
-        
-//        var contentSize: CGFloat = 0.0
-//
-//        for (index,item) in menuModels.enumerated() {
-//            let width = menuModels[index].width(withConstrainedHeight: menuTextHeight, font: UIFont.systemFont(ofSize: 17)) + 20 //(左右間距)
-//            contentSize += width
-//        }
-//
-//        menuView.contentSize = CGSize(width: contentSize, height: menuView.contentSize.height)
-//
-//        menuView.reloadData()
-        
-//        layout.invalidateLayout()
-//        menuView.layoutIfNeeded()
-//        menuView.reloadData()
-        
     }
     
     func setUpMenuSlider() {
@@ -106,9 +86,7 @@ extension ViewController {
         
         slider.heightAnchor.constraint(equalToConstant: 3).isActive = true
         slider.centerYAnchor.constraint(equalTo: menuView.centerYAnchor,constant: 16).isActive = true
-        
-//        widthAnchor = slider.widthAnchor.constraint(equalTo: menuView.widthAnchor, multiplier: 1/4)
-        
+          
         widthAnchor = slider.widthAnchor.constraint(equalToConstant: firstMenuWidth)
         widthAnchor?.isActive = true
         leftAnchor = slider.leftAnchor.constraint(equalTo: menuView.leftAnchor, constant: 0)
@@ -240,25 +218,26 @@ extension ViewController: UIScrollViewDelegate {
         var nextWidth: CGFloat = 0.0
         let currentWidth = menuItemWidth[currentRow] ?? firstMenuWidth
         
-        
         // pageVC的行為： 0 - 1 - 2 （* 375） 到末端後回歸375
         let directionCondition = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1)
-        let leftMove = directionCondition > 0
-        let rightMove = directionCondition < 0
+        let leftMove = directionCondition < 0
+        let rightMove = directionCondition > 0
         
-        if leftMove {
+        if rightMove {
             
             widthUnit = currentWidth
             nextWidth = menuItemWidth[currentRow + 1] ?? currentWidth
             
-        } else if rightMove {
+        } else if leftMove {
 
             widthUnit = menuItemWidth[currentRow - 1] ?? currentWidth
             nextWidth = menuItemWidth[currentRow - 1] ?? currentWidth
         }
         
         //偏移量 / 移動的距離 -1個單位 ＊ 單位量  //取得得是滾完的位置 需要 - item本身的width
-        let endLoacation = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1) * widthUnit
+        var endLoacation = ((scrollView.contentOffset.x / UIScreen.main.bounds.width) - 1) * widthUnit
+        endLoacation = setUpSpaceing(leftMove: leftMove, rightMove: rightMove, endLoacation: &endLoacation)
+        
         self.leftAnchor?.constant = self.currentLoaction + endLoacation
         
         //滑動變化率必須要為正的
@@ -266,23 +245,44 @@ extension ViewController: UIScrollViewDelegate {
         self.widthAnchor?.constant = currentWidth + varyingWidth
     }
     
-    func itemSelection(_ scrollView: UIScrollView, screenWidth: CGFloat) { //判斷翻頁 左右
+    //判斷翻頁 左右
+    func itemSelection(_ scrollView: UIScrollView, screenWidth: CGFloat) {
       
         if scrollView.contentOffset.x == 0 {
         
-            scrollToCenteredHorizontally(currentRow: (currentRow - 1))
+            selectionScrollTo(currentRow: (currentRow - 1))
             
         } else if scrollView.contentOffset.x == (screenWidth + screenWidth) {
             
-            scrollToCenteredHorizontally(currentRow: (currentRow + 1))
+            selectionScrollTo(currentRow: (currentRow + 1))
         }
     }
     
-    fileprivate func scrollToCenteredHorizontally(currentRow: Int) { //動畫是要原本的 index
+    //動畫是要原本的 index
+    fileprivate func selectionScrollTo(currentRow: Int) {
         self.menuView.selectItem(at: IndexPath(row: currentRow, section: 0), animated: true, scrollPosition: .centeredHorizontally)
         self.currentRow = currentRow
+        
+        //拖動邊緣判斷
+        guard currentRow >= 0 &&  currentRow <= self.menuModels.count  else { return }
         //儲存上一個位置
         self.currentLoaction = menuItemOffsetX[currentRow] ?? 0.0
+    }
+    
+    func setUpSpaceing(leftMove: Bool, rightMove: Bool, endLoacation : inout CGFloat) -> CGFloat {
+        
+        //左右距離補償
+        let flowLayout = self.menuView.collectionViewLayout as? UICollectionViewFlowLayout
+        
+        if let minimumSpacing = flowLayout?.minimumLineSpacing, minimumSpacing > 0 {
+            
+            if rightMove {
+                endLoacation += minimumSpacing
+            } else if leftMove {
+                endLoacation -= minimumSpacing
+            }
+        }
+        return endLoacation
     }
     
 }
