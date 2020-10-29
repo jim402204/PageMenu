@@ -46,7 +46,7 @@ class PageVC: UIPageViewController {
     }
     
     //提供collectionView的資料對應滑動
-    var menuItem = MenuItem()
+    fileprivate var menuItem = MenuItem()
     
     func setUpMenuItem(menuItem: MenuItem, viewControllerList: [UIViewController]) {
         self.menuItem = menuItem
