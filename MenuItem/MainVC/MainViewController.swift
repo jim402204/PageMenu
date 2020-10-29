@@ -11,13 +11,23 @@ class MainViewController: UIViewController {
 
     let menuModels = ["芭蕉","旦蕉","金鑽鳳梨","鳳梨花","蓬萊仙山999","甜蜜蜜","檸檬","牛奶鳳梨","葡萄柚","柚子"]
     
-    let viewControllers: [UIViewController] = []
+    lazy var viewControllers: [UIViewController] = {
+        
+        var vcs: [UIViewController] = []
+        menuModels.forEach({ (model) in
+            let vc = UIViewController()
+            vc.view.backgroundColor = .random
+            
+            vcs.append(vc)
+        })
+        return vcs
+    }()
     
     var pageMenu = PageMenu()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        
         pageMenu.setUp(self,menuTitle: menuModels, viewControllers: viewControllers)
     }
     

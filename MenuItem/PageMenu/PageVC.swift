@@ -53,9 +53,14 @@ class PageVC: UIPageViewController {
         
         scrollView?.delegate = self
         
-        setUpVCs(models: menuItem.menuTitles)
+        setUp(viewControllers: viewControllerList)
     }
     
+    func setUp(viewControllers: [UIViewController]) {
+       
+        self.viewControllerList = viewControllers
+        self.setViewControllers([self.viewControllerList[0]], direction: .forward, animated: true, completion: nil)
+    }
 }
 
 extension PageVC: UIPageViewControllerDataSource {
