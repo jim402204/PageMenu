@@ -44,3 +44,20 @@ extension UIColor {
                        alpha: 1.0)
     }
 }
+
+extension UIView {
+    
+    func layout(top: CGFloat, bottom: CGFloat, left: CGFloat, right: CGFloat) {
+        
+        self.translatesAutoresizingMaskIntoConstraints = false
+        
+        if let view = superview {
+            NSLayoutConstraint.activate([
+                topAnchor.constraint(equalTo: view.topAnchor, constant: top),
+                bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -bottom),
+                leftAnchor.constraint(equalTo: view.leftAnchor, constant: left),
+                rightAnchor.constraint(equalTo: view.rightAnchor, constant: -right),
+            ])
+        }
+    }
+}
