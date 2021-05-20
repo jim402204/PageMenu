@@ -21,6 +21,7 @@
 		22F4700025492EFC004DCB82 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F46FFF25492EFC004DCB82 /* MainViewController.swift */; };
 		22F4700425492FBB004DCB82 /* PageMenu.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F4700325492FBB004DCB82 /* PageMenu.swift */; };
 		22F47007254944A0004DCB82 /* MenuItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 22F47006254944A0004DCB82 /* MenuItem.swift */; };
+		38D3832B26565E1C00DA3939 /* IndicatorObjectForCollectionVIew.swift in Sources */ = {isa = PBXBuildFile; fileRef = 38D3832A26565E1C00DA3939 /* IndicatorObjectForCollectionVIew.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -40,6 +41,7 @@
 		22F46FFF25492EFC004DCB82 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		22F4700325492FBB004DCB82 /* PageMenu.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PageMenu.swift; sourceTree = "<group>"; };
 		22F47006254944A0004DCB82 /* MenuItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuItem.swift; sourceTree = "<group>"; };
+		38D3832A26565E1C00DA3939 /* IndicatorObjectForCollectionVIew.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = IndicatorObjectForCollectionVIew.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -80,6 +82,7 @@
 				22F46FFE25492ED9004DCB82 /* MainVC */,
 				229F0CD22542B62400DB04AB /* VCs */,
 				229F0C8E25416BC200DB04AB /* Info.plist */,
+				38D3832A26565E1C00DA3939 /* IndicatorObjectForCollectionVIew.swift */,
 			);
 			path = MenuItem;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 				229F0C8525416BC100DB04AB /* ViewController.swift in Sources */,
 				229F0CD02542B60E00DB04AB /* PageVC.swift in Sources */,
 				229F0C8125416BC100DB04AB /* AppDelegate.swift in Sources */,
+				38D3832B26565E1C00DA3939 /* IndicatorObjectForCollectionVIew.swift in Sources */,
 				229F0C8325416BC100DB04AB /* SceneDelegate.swift in Sources */,
 				229F0CC82542793E00DB04AB /* LabelCollectionViewCell.swift in Sources */,
 				22F4700425492FBB004DCB82 /* PageMenu.swift in Sources */,
